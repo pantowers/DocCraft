@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://doccraft.local/schemas/document.schema.json",
+  "title": "DocCraft Academic Document",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "preset",
+    "paper",
+    "margins",
+    "typography",
+    "paragraph",
+    "pageNumbering",
+    "sections",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "folderId": { "type": ["string", "null"] },
+    "documentKind": { "enum": ["general", "skripsi", "makalah", "laporan", "jurnal"] },
+    "citationStyle": { "enum": ["author-date", "numeric-bracket", "numeric-paren"], "default": "author-date" },
+    "preset": { "type": "string", "minLength": 1 },
+    "paper": {
+      "type": "object",
+      "required": ["size", "widthCm", "heightCm"],
+      "properties": {
+        "size": { "type": "string" },
+        "widthCm": { "type": "number", "exclusiveMinimum": 0 },
+        "heightCm": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "margins": {
+      "type": "object",
+      "required": ["topCm", "leftCm", "bottomCm", "rightCm"],
+      "properties": {
+        "topCm": { "type": "number", "minimum": 0 },
+        "leftCm": { "type": "number", "minimum": 0 },
+        "bottomCm": { "type": "number", "minimum": 0 },
+        "rightCm": { "type": "number", "minimum": 0 }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "required": ["fontFamily", "heading1Pt", "heading2Pt", "heading3Pt", "bodyPt", "captionPt"],
+      "properties": {
+        "fontFamily": { "type": "string", "minLength": 1 },
+        "heading1Pt": { "type": "number", "exclusiveMinimum": 0 },
+        "heading2Pt": { "type": "number", "exclusiveMinimum": 0 },
+        "heading3Pt": { "type": "number", "exclusiveMinimum": 0 },
+        "bodyPt": { "type": "number", "exclusiveMinimum": 0 },
+        "bodyBold": { "type": "boolean" },
+        "bodyItalic": { "type": "boolean" },
+        "captionPt": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "paragraph": {
+      "type": "object",
+      "required": ["firstLineIndentCm", "leftIndentCm", "rightIndentCm", "lineSpacing", "beforePt", "afterPt"],
+      "properties": {
+        "firstLineIndentCm": { "type": "number" },
+        "leftIndentCm": { "type": "number" },
+        "rightIndentCm": { "type": "number" },
+        "lineSpacing": { "type": "number", "exclusiveMinimum": 0 },
+        "alignment": { "enum": ["left", "center", "right", "justify"] },
+        "beforePt": { "type": "number", "minimum": 0 },
+        "afterPt": { "type": "number", "minimum": 0 }
+      }
+    },
+    "outlineStyles": {
+      "type": "object",
+      "description": "Format paragraf bersama per jenis outline (bab, sub-bab, dan anak sub-bab).",
+      "additionalProperties": { "type": "object" }
+    },
+    "frontMatterProfile": {
+      "type": "object",
+      "properties": {
+        "thesisTitle": { "type": "string" }, "author": { "type": "string" }, "studentId": { "type": "string" },
+        "institution": { "type": "string" }, "faculty": { "type": "string" }, "department": { "type": "string" },
+        "concentration": { "type": "string" }, "programLevel": { "type": "string" }, "workType": { "type": "string" },
+        "city": { "type": "string" }, "year": { "type": "string" }, "logoDataUrl": { "type": "string" }
+      }
+    },
+    "pageNumbering": {
+      "type": "object",
+      "required": ["show", "style", "startAt"],
+      "properties": {
+        "show": { "type": "boolean" },
+        "style": { "enum": ["roman-lower", "roman-upper", "arabic"] },
+        "startAt": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reference" }
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "required": ["id", "authors", "year", "title", "source", "url"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "authors": { "type": "string", "minLength": 1 },
+        "year": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "sourceType": { "enum": ["book", "journal", "conference", "chapter", "website", "thesis", "report"], "default": "book" },
+        "source": { "type": "string" },
+        "publisher": { "type": "string" },
+        "journal": { "type": "string" },
+        "containerTitle": { "type": "string" },
+        "editor": { "type": "string" },
+        "siteName": { "type": "string" },
+        "institution": { "type": "string" },
+        "volume": { "type": "string" },
+        "issue": { "type": "string" },
+        "pages": { "type": "string" },
+        "doi": { "type": "string" },
+        "url": { "type": "string" }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": ["id", "type", "title", "content"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["chapter", "section", "subsection", "paragraph", "image", "table", "pageBreak", "tableOfContents", "listOfFigures", "listOfTables", "titlePage", "abstract", "frontMatter"] },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "caption": { "type": "string" },
+        "keywords": { "type": "string" },
+        "minWords": { "type": ["integer", "null"], "minimum": 1 },
+        "maxWords": { "type": ["integer", "null"], "minimum": 1 },
+        "coverData": { "type": "object", "properties": { "author": { "type": "string" }, "institution": { "type": "string" }, "faculty": { "type": "string" }, "department": { "type": "string" }, "program": { "type": "string" }, "year": { "type": "string" } } },
+        "frontMatterTemplate": { "enum": ["approval", "advisorApproval", "examApproval", "originality", "preface", null] },
+        "frontMatterData": { "type": "object", "additionalProperties": { "type": "string" } },
+        "asset": { "type": ["object", "string", "null"] },
+        "tableData": {
+          "type": "object",
+          "required": ["rows"],
+          "properties": {
+            "hasHeaderRow": { "type": "boolean" },
+            "rows": {
+              "type": "array",
+              "items": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "pageNumbering": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "style": { "enum": ["roman-lower", "roman-upper", "arabic"] },
+            "restart": { "type": "boolean" },
+            "startAt": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/node" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "enum": ["chapter", "section", "subsection"] } } },
+          "then": { "required": ["children"] }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["image", "table"] } } },
+          "then": { "required": ["caption"] }
+        }
+      ]
+    }
+  }
+}

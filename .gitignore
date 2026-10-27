@@ -1,0 +1,15 @@
+node_modules/
+.next*/
+.nx*/
+.nh*/
+.*-build*/
+.*-check*/
+out/
+build/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+*.tsbuildinfo
+tmp/
+tmp_*/
